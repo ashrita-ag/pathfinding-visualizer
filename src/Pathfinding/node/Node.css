@@ -1,0 +1,164 @@
+.node-container {
+  display: inline-grid;
+  margin: 0 0 0 0;
+  border: 1px solid #8080805b;
+  grid-gap: 0px;
+  grid-template-columns: repeat(50, 27px);
+  grid-template-rows: repeat(20, 27px);
+}
+
+.node-item {
+  border: 1px solid white;
+  background-color: #b4deff;
+}
+
+.node-start {
+  animation-name: setStart;
+  animation-duration: 0.2s;
+  animation-timing-function: ease;
+  animation-delay: 0;
+  animation-iteration-count: 1;
+  animation-direction: alternate;
+  animation-fill-mode: forwards;
+}
+
+.node-stop {
+  animation-name: setStop;
+  animation-duration: 0.2s;
+  animation-timing-function: ease;
+  animation-delay: 0;
+  animation-iteration-count: 1;
+  animation-direction: alternate;
+  animation-fill-mode: forwards;
+}
+
+.node-wall {
+  animation-name: setWall;
+  animation-duration: 0.3s;
+  animation-timing-function: ease;
+  animation-delay: 0;
+  animation-iteration-count: 1;
+  animation-direction: alternate;
+  animation-fill-mode: forwards;
+}
+
+.node-visited {
+  animation-name: visitingNode;
+  animation-duration: 1.5s;
+  animation-timing-function: cubic-bezier(0.39, 0.575, 0.565, 1);
+  animation-delay: 0;
+  animation-iteration-count: 1;
+  animation-direction: alternate;
+  animation-fill-mode: forwards;
+}
+
+.node-shortest-path {
+  animation-name: visualizingPath;
+  animation-duration: 1.5s;
+  animation-timing-function: cubic-bezier(0.39, 0.575, 0.565, 1);
+  animation-delay: 0;
+  animation-iteration-count: 1;
+  animation-direction: alternate;
+  animation-fill-mode: forwards;
+}
+
+@keyframes visitingNode {
+  0% {
+    transform: scale(0.3);
+    background-color: #000042bf;
+    opacity: 1;
+    border-radius: 100%;
+  }
+  50% {
+    background-color: #73acf7bf;
+    opacity: 0.8;
+  }
+  75% {
+    transform: scale(1.2);
+    background-color: #31d6ffbf;
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    border: 1px solid white;
+    background-color: #4988fc;
+    opacity: 0.73;
+  }
+}
+
+@keyframes visualizingPath {
+  0% {
+    transform: scale(0.3);
+    background-color: #fcaa14;
+  }
+  50% {
+    background-color: #fcaa14;
+  }
+  75% {
+    transform: scale(1.2);
+    background-color: #fcaa14;
+  }
+  100% {
+    transform: scale(1);
+    border: 1px solid #ffffff;
+    background-color: #fcd614;
+  }
+}
+
+@keyframes setWall {
+  0% {
+    transform: scale(0.98);
+    background-color: #090d47c7;
+  }
+  50% {
+    transform: scale(1.2);
+    background-color: #090d47c7;
+  }
+  60% {
+    transform: scale(1.4);
+    background-color: #090d47c7;
+  }
+  100% {
+    transform: scale(1);
+    border: 0;
+    background-color: #090d47c7;
+  }
+}
+
+@keyframes setStart {
+  0% {
+    transform: scale(1);
+    background-color: #43bd3f;
+  }
+  50% {
+    background-color: #43bd3f;
+  }
+  75% {
+    transform: scale(1.1);
+    background-color: #43bd3f;
+  }
+  100% {
+    transform: scale(1);
+    border: 1px solid white;
+    background-color: #43bd3f;
+  }
+}
+
+@keyframes setStop {
+  0% {
+    transform: scale(0.95);
+    background-color: #f31d1dc7;
+  }
+  50% {
+    background-color: #f31d1dc7;
+  }
+  75% {
+    transform: scale(1.1);
+    background-color: #f31d1dc7;
+  }
+  100% {
+    transform: scale(1);
+    border: 1px solid #ffffff;
+    background-color: #f31d1dc7;
+  }
+}
