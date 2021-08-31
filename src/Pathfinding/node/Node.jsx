@@ -26,13 +26,13 @@ export default class Node extends Component {
     let row = this.props.row
     let col = this.props.col
     if (store.getState().nodes[row][col].isStart) {
-      // if (store.getState().dragStartPoint) return;
+      if (store.getState().dragStartPoint) return
       actionDragStart()
     } else if (store.getState().nodes[row][col].isStop) {
-      // if (store.getState().dragStopPoint) return;
+      if (store.getState().dragStopPoint) return
       actionDragStop()
     } else {
-      // if (store.getState().mouseIsClicked) return;
+      if (store.getState().mouseIsClicked) return
       mouseClickTrue()
       updateToggledWall(row, col)
     }
@@ -110,7 +110,11 @@ export default class Node extends Component {
 
   render() {
     const { row, col } = this.props
-    if (!store.getState().visitingAnimation) {
+    if (store.getState().shortestPathAnimation)
+      return (
+        <div id={`node-${col}-${row}`} className='node-shortest-path'></div>
+      )
+    else if (!store.getState().visitingAnimation) {
       const { isWall, isStart, isStop } = store.getState().nodes[row][col]
 
       const nodeClass = isStop

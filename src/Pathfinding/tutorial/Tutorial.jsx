@@ -51,7 +51,7 @@ export default class Tutorial extends Component {
               </h1>
             }
             centered='true'
-            visible={store.getState().visible}
+            visible={store.getState().tutorialVisible}
             width={700}
             maskClosable={false}
             onCancel={() => {
@@ -119,7 +119,7 @@ export default class Tutorial extends Component {
               </h1>
             }
             centered='true'
-            visible={store.getState().visible}
+            visible={store.getState().tutorialVisible}
             width={700}
             maskClosable={false}
             onCancel={() => {
@@ -182,7 +182,7 @@ export default class Tutorial extends Component {
           <Modal
             title={<h1 className='tutorial-title'>{'Adding walls'}</h1>}
             centered='true'
-            visible={store.getState().visible}
+            visible={store.getState().tutorialVisible}
             width={700}
             maskClosable={false}
             onCancel={() => {
@@ -244,7 +244,7 @@ export default class Tutorial extends Component {
           <Modal
             title={<h1 className='tutorial-title'>{'Dragging nodes'}</h1>}
             centered='true'
-            visible={store.getState().visible}
+            visible={store.getState().tutorialVisible}
             width={700}
             maskClosable={false}
             onCancel={() => {
@@ -307,7 +307,7 @@ export default class Tutorial extends Component {
               <h1 className='tutorial-title'>{'Visualizing and reset'}</h1>
             }
             centered='true'
-            visible={store.getState().visible}
+            visible={store.getState().tutorialVisible}
             width={700}
             maskClosable={false}
             onCancel={() => {
@@ -367,7 +367,7 @@ export default class Tutorial extends Component {
         <Modal
           title={<h1 className='tutorial-title'>{'Enjoy!'}</h1>}
           centered='true'
-          visible={store.getState().visible}
+          visible={store.getState().tutorialVisible}
           width={700}
           maskClosable={false}
           onCancel={() => {

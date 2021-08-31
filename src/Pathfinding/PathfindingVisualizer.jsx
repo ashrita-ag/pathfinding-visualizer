@@ -7,6 +7,8 @@ import {
   INIT_NODES,
   MOUSE_UP,
   RESET_PREVIOUS_NODE,
+  SET_SHORTEST_ANIMATE_FALSE,
+  SET_SHORTEST_ANIMATE_TRUE,
   SET_START_NODE,
   SET_STOP_NODE,
   SET_VISIT_ANIMATE_FALSE,
@@ -33,6 +35,8 @@ import { FileTextOutlined } from '@ant-design/icons'
 import './PathfindingVisualizer.css'
 
 export default class PathfindingVisualizer extends Component {
+  // let visitingAnimationTimer=null,shortestPathAnimationTimer=null,shortestPathAnimationStartTimer;
+
   constructor(props) {
     super(props)
     this.state = {
@@ -48,49 +52,51 @@ export default class PathfindingVisualizer extends Component {
       }
       this.nodeRefs.push(refRow)
     }
-    this.tutorialRef = React.createRef()
+    this.tutorialRef = createRef()
   }
 
   componentDidMount() {
     const nodes = getInitialGrid()
     initStoreNodes(nodes)
     this.setState({ nodes: nodes })
-    setVisibleFalse()
   }
 
   implementAlgorithm(algoName) {
     if (!store.getState().visitingAnimation) {
-    setVistingAnimationTrue()
-    const { nodes } = store.getState()
-    const startNodeRow = store.getState().startNode[0]
-    const startNodeCol = store.getState().startNode[1]
-    const stopNodeRow = store.getState().stopNode[0]
-    const stopNodeCol = store.getState().stopNode[1]
-    const startNode = nodes[startNodeRow][startNodeCol]
-    const stopNode = nodes[stopNodeRow][stopNodeCol]
-    const visitedNodeInorder =
-      algoName === DIJKSTRA
-        ? dijkstra(startNode, stopNode, nodes)
-        : algoName === ASTAR
-        ? astar(startNode, stopNode, nodes)
-        : algoName === BFS
-        ? bfs(startNode, stopNode, nodes)
-        : algoName === BEST_FIRST
-        ? bestFirst(startNode, stopNode, nodes)
-        : [] //algo
-    const shortestPathNodes = findShortestPath(stopNode)
-    this.animateAlgorithm(visitedNodeInorder, shortestPathNodes)
+      setVistingAnimationTrue()
+      const { nodes } = store.getState()
+      const startNodeRow = store.getState().startNode[0]
+      const startNodeCol = store.getState().startNode[1]
+      const stopNodeRow = store.getState().stopNode[0]
+      const stopNodeCol = store.getState().stopNode[1]
+      const startNode = nodes[startNodeRow][startNodeCol]
+      const stopNode = nodes[stopNodeRow][stopNodeCol]
+      const visitedNodeInorder =
+        algoName === DIJKSTRA
+          ? dijkstra(startNode, stopNode, nodes)
+          : algoName === ASTAR
+          ? astar(startNode, stopNode, nodes)
+          : algoName === BFS
+          ? bfs(startNode, stopNode, nodes)
+          : algoName === BEST_FIRST
+          ? bestFirst(startNode, stopNode, nodes)
+          : []
+      const shortestPathNodes = findShortestPath(stopNode)
+      this.animateAlgorithm(visitedNodeInorder, shortestPathNodes)
     }
   }
 
   animateAlgorithm(visitedNodeInorder, shortestPathNodes) {
     for (let i = 0; i < visitedNodeInorder.length; i++) {
       if (i === visitedNodeInorder.length - 1) {
+        // shortestPathAnimationStartTimer =
         setTimeout(() => {
+          setShortestPathAnimationTrue()
           this.animateShortestPath(shortestPathNodes)
         }, 10 * i)
       } else {
         const { col, row } = visitedNodeInorder[i]
+        // visitingAnimationTimer =
         setTimeout(() => {
           this.makeOtherNodeRender(row, col)
         }, 10 * i)
@@ -101,11 +107,12 @@ export default class PathfindingVisualizer extends Component {
   animateShortestPath(shortestPathNodes) {
     for (let i = 0; i < shortestPathNodes.length; i++) {
       const { col, row } = shortestPathNodes[i]
+      // shortestPathAnimationTimer =
       setTimeout(() => {
-        document.getElementById(`node-${col}-${row}`).className =
-          'node-shortest-path'
+        this.makeOtherNodeRender(row, col)
       }, 50 * i)
     }
+    setShortestPathAnimationFalse()
   }
 
   makeOtherNodeRender(row, col) {
@@ -119,16 +126,12 @@ export default class PathfindingVisualizer extends Component {
   }
 
   resetNodes() {
-    if (!store.getState().visitingAnimation) {
     const { nodes } = this.state
     initStoreNodes(nodes)
+    // clearTimeout(visitingAnimationTimer)
+    // clearTimeout(shortestPathAnimationStartTimer)
+    // clearTimeout(shortestPathAnimationTimer)
     this.setState({})
-    // after operating the DOM directly(in shortest path animating)
-    // sometimes rerendering the same node will not set the DOM's class correctly
-    document.getElementById(
-      `node-${STOP_NODE_COL}-${STOP_NODE_ROW}`
-    ).className = 'node-stop'
-    }
   }
 
   render() {
@@ -163,7 +166,9 @@ export default class PathfindingVisualizer extends Component {
             </button>
           </div>
 
-          <button onClick={() => this.resetNodes()} className='navbar-button button-reset'>
+          <button
+            onClick={() => this.resetNodes()}
+            className='navbar-button button-reset'>
             Reset Grid
           </button>
         </div>
@@ -239,6 +244,7 @@ const createNode = (row, col) => {
 
 const initStoreNodes = (nodes) => {
   setVistingAnimationFalse()
+  setShortestPathAnimationFalse()
   actionMouseUp()
   resetPreviousNode()
   setStartNode(START_NODE_ROW, START_NODE_COL)
@@ -263,6 +269,21 @@ const setVistingAnimationTrue = () => {
   }
   store.dispatch(action)
 }
+
+const setShortestPathAnimationFalse = () => {
+  const action = {
+    type: SET_SHORTEST_ANIMATE_FALSE,
+  }
+  store.dispatch(action)
+}
+
+const setShortestPathAnimationTrue = () => {
+  const action = {
+    type: SET_SHORTEST_ANIMATE_TRUE,
+  }
+  store.dispatch(action)
+}
+
 const actionMouseUp = () => {
   const action = {
     type: MOUSE_UP,

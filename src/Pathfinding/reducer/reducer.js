@@ -7,6 +7,8 @@ import {
   MOUSE_UP,
   RESET_PREVIOUS_NODE,
   SET_PREVIOUS_NODE,
+  SET_SHORTEST_ANIMATE_FALSE,
+  SET_SHORTEST_ANIMATE_TRUE,
   SET_START_NODE,
   SET_STOP_NODE,
   SET_VISIBLE_FALSE,
@@ -27,7 +29,8 @@ const initialState = {
   dragStartPoint: false,
   dragStopPoint: false,
   visitingAnimation: false,
-  visible: true,
+  shortestPathAnimation: false,
+  tutorialVisible: false,
   nodes: [],
   previousNode: [],
   startNode: [START_NODE_ROW, START_NODE_COL],
@@ -104,15 +107,25 @@ export default function reducer(state = initialState, action) {
   }
   if (action.type === SET_VISIBLE_FALSE) {
     const newState = JSON.parse(JSON.stringify(state))
-    newState.visible = false
+    newState.tutorialVisible = false
     return newState
   }
   if (action.type === SET_VISIBLE_TRUE) {
     const newState = JSON.parse(JSON.stringify(state))
-    newState.visible = true
+    newState.tutorialVisible = true
+    return newState
+  }
+
+  if (action.type === SET_SHORTEST_ANIMATE_FALSE) {
+    const newState = JSON.parse(JSON.stringify(state))
+    newState.shortestPathAnimation = false
+    return newState
+  }
+  if (action.type === SET_SHORTEST_ANIMATE_TRUE) {
+    const newState = JSON.parse(JSON.stringify(state))
+    newState.shortestPathAnimation = true
     return newState
   }
 
   return state
 }
-
