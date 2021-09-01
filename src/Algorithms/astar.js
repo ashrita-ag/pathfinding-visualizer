@@ -2,7 +2,7 @@ import { getCurrentNeighbors, manhattanDistance, sortNodes } from './common'
 
 export function astar(startNode, stopNode, allNodes) {
   startNode.distance = 0
-  startNode.distanceFromStart = 0
+  startNode.distanceFromStop = 0
 
   const Heap = [startNode]
   const visited = []
@@ -25,9 +25,9 @@ function updateUnvisitedNeighbors(current, allNodes, Heap, stopNode) {
   const currentNeighbors = getCurrentNeighbors(current, allNodes)
   for (const neighbor of currentNeighbors) {
     if (neighbor.isWall || neighbor.isVisited) continue
-    neighbor.distanceFromStart = current.distanceFromStart + 1
+    neighbor.distanceFromStop = current.distanceFromStop + 1
     neighbor.distance =
-      neighbor.distanceFromStart + manhattanDistance(neighbor, stopNode)
+      neighbor.distanceFromStop + manhattanDistance(neighbor, stopNode)
     neighbor.previousNode = current
     Heap.push(neighbor)
   }

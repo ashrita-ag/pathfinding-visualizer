@@ -9,7 +9,7 @@
 
 .node-item {
   border: 1px solid white;
-  background-color: #b4deff;
+  background-color: #aecafd;
 }
 
 .node-start {
@@ -46,7 +46,6 @@
   animation-name: visitingNode;
   animation-duration: 1.5s;
   animation-timing-function: cubic-bezier(0.39, 0.575, 0.565, 1);
-  animation-delay: 0;
   animation-iteration-count: 1;
   animation-direction: alternate;
   animation-fill-mode: forwards;
@@ -65,9 +64,12 @@
 @keyframes visitingNode {
   0% {
     transform: scale(0.3);
-    background-color: #000042bf;
+    background-color: #fcaa14;
     opacity: 1;
     border-radius: 100%;
+  }
+  20% {
+    background-color: #000042bf;
   }
   50% {
     background-color: #73acf7bf;
@@ -82,7 +84,6 @@
     transform: scale(1);
     border: 1px solid white;
     background-color: #4988fc;
-    opacity: 0.73;
   }
 }
 
@@ -108,20 +109,20 @@
 @keyframes setWall {
   0% {
     transform: scale(0.98);
-    background-color: #090d47c7;
+    background-color: #0f1c35;
   }
   50% {
     transform: scale(1.2);
-    background-color: #090d47c7;
+    background-color: #0f1c35;
   }
   60% {
     transform: scale(1.4);
-    background-color: #090d47c7;
+    background-color: #0f1c35;
   }
   100% {
     transform: scale(1);
     border: 0;
-    background-color: #090d47c7;
+    background-color: #0f1c35;
   }
 }
 
@@ -131,10 +132,11 @@
     background-color: #43bd3f;
   }
   50% {
+    transform: scale(1.2);
     background-color: #43bd3f;
   }
   75% {
-    transform: scale(1.1);
+    transform: scale(1.4);
     background-color: #43bd3f;
   }
   100% {
@@ -150,10 +152,11 @@
     background-color: #f31d1dc7;
   }
   50% {
+    transform: scale(1.2);
     background-color: #f31d1dc7;
   }
   75% {
-    transform: scale(1.1);
+    transform: scale(1.4);
     background-color: #f31d1dc7;
   }
   100% {

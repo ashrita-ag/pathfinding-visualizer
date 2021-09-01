@@ -7,6 +7,7 @@ import {
   DRAG_STOP,
   MOUSE_CLICKED,
   MOUSE_UP,
+  RESET_PREVIOUS_NODE,
   SET_PREVIOUS_NODE,
   SET_START_NODE,
   SET_STOP_NODE,
@@ -246,6 +247,13 @@ export const setStartNode = (row, col) => {
   const action = {
     type: SET_START_NODE,
     value: [row, col],
+  }
+  store.dispatch(action)
+}
+
+export const resetPreviousNode = () => {
+  const action = {
+    type: RESET_PREVIOUS_NODE,
   }
   store.dispatch(action)
 }

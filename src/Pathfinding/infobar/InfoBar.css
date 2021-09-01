@@ -17,15 +17,10 @@
   position: relative;
   top: 0.4em;
 }
-/* 
-.info-bar-reset {
-  border: 1px solid white;
-  background-color: #f8dbaf;
-} */
 
 .info-bar-unvisited {
   border: 1px solid white;
-  background-color: #b4deff;
+  background-color: #aecafd;
 }
 
 .info-bar-start {
@@ -40,13 +35,12 @@
 
 .info-bar-wall {
   border: 1px solid white;
-  background-color: #090d47c7;
+  background-color: #0f1c35;
 }
 
 .info-bar-visited {
   border: 1px solid white;
-  background-color: #65adff;
-  opacity: 0.73;
+  background: #4988fc;
 }
 
 .info-bar-shortestpath {

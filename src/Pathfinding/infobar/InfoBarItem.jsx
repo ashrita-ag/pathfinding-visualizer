@@ -5,7 +5,7 @@ export default class InfoBarItem extends Component {
     const { infoBarItemClass, text } = this.props
     return (
       <li className='info-bar-item'>
-        <div className={infoBarItemClass + ' info-bar-item-box'}></div>   {text}
+        <div className={infoBarItemClass + ' info-bar-item-box'}></div> {text}
       </li>
     )
   }

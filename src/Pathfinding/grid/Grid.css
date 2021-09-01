@@ -1,9 +1,9 @@
 .grid {
-    display: inline-grid;
-    margin: 0 0 0 0;
-    border: 1px solid #8080805b;
-    grid-gap: 0px;
-    grid-template-columns: repeat(50, 27px);
-    grid-template-rows: repeat(20, 27px);
-    opacity: 0.89;
-  }
+  display: inline-grid;
+  margin: 10px 30px;
+  border: 1px solid #8080805b;
+  grid-gap: 0px;
+  grid-template-columns: repeat(50, 27px);
+  grid-template-rows: repeat(20, 27px);
+  opacity: 0.89;
+}

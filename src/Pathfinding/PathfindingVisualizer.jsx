@@ -6,11 +6,14 @@ import {
   DIJKSTRA,
   INIT_NODES,
   MOUSE_UP,
-  RESET_PREVIOUS_NODE,
+  MSG_ASTAR,
+  MSG_BEST_FIRST,
+  MSG_BFS,
+  MSG_DEFAULT,
+  MSG_DIJKSTRA,
+  MSG_NO_PATH,
   SET_SHORTEST_ANIMATE_FALSE,
   SET_SHORTEST_ANIMATE_TRUE,
-  SET_START_NODE,
-  SET_STOP_NODE,
   SET_VISIT_ANIMATE_FALSE,
   SET_VISIT_ANIMATE_TRUE,
   START_NODE_COL,
@@ -21,7 +24,7 @@ import {
   TOTAL_ROWS,
 } from './constant/constants'
 import store from './reducer/store'
-import Node from './node/Node'
+import Node, { resetPreviousNode, setStartNode, setStopNode } from './node/Node'
 import Grid from './grid/Grid'
 import InfoBar from './infobar/InfoBar'
 import { findShortestPath } from '../Algorithms/common'
@@ -30,13 +33,11 @@ import { astar } from '../Algorithms/astar'
 import { bestFirst } from '../Algorithms/bestfirst'
 import { bfs } from '../Algorithms/bfs'
 import Tutorial, { setVisibleFalse, setVisibleTrue } from './tutorial/Tutorial'
-import { Affix, Button, Tooltip } from 'antd'
+import { Affix, Button, message, Tooltip } from 'antd'
 import { FileTextOutlined } from '@ant-design/icons'
 import './PathfindingVisualizer.css'
 
 export default class PathfindingVisualizer extends Component {
-  // let visitingAnimationTimer=null,shortestPathAnimationTimer=null,shortestPathAnimationStartTimer;
-
   constructor(props) {
     super(props)
     this.state = {
@@ -53,6 +54,7 @@ export default class PathfindingVisualizer extends Component {
       this.nodeRefs.push(refRow)
     }
     this.tutorialRef = createRef()
+    this.msgRef = createRef()
   }
 
   componentDidMount() {
@@ -64,6 +66,13 @@ export default class PathfindingVisualizer extends Component {
   implementAlgorithm(algoName) {
     if (!store.getState().visitingAnimation) {
       setVistingAnimationTrue()
+
+      if (algoName === DIJKSTRA) this.updateMsg(MSG_DIJKSTRA)
+      else if (algoName === ASTAR) this.updateMsg(MSG_ASTAR)
+      else if (algoName === BEST_FIRST) this.updateMsg(MSG_BEST_FIRST)
+      else if (algoName === BFS) this.updateMsg(MSG_BFS)
+      else this.updateMsg(MSG_DEFAULT)
+
       const { nodes } = store.getState()
       const startNodeRow = store.getState().startNode[0]
       const startNodeCol = store.getState().startNode[1]
@@ -81,6 +90,7 @@ export default class PathfindingVisualizer extends Component {
           : algoName === BEST_FIRST
           ? bestFirst(startNode, stopNode, nodes)
           : []
+
       const shortestPathNodes = findShortestPath(stopNode)
       this.animateAlgorithm(visitedNodeInorder, shortestPathNodes)
     }
@@ -89,14 +99,12 @@ export default class PathfindingVisualizer extends Component {
   animateAlgorithm(visitedNodeInorder, shortestPathNodes) {
     for (let i = 0; i < visitedNodeInorder.length; i++) {
       if (i === visitedNodeInorder.length - 1) {
-        // shortestPathAnimationStartTimer =
         setTimeout(() => {
           setShortestPathAnimationTrue()
           this.animateShortestPath(shortestPathNodes)
         }, 10 * i)
       } else {
         const { col, row } = visitedNodeInorder[i]
-        // visitingAnimationTimer =
         setTimeout(() => {
           this.makeOtherNodeRender(row, col)
         }, 10 * i)
@@ -105,14 +113,16 @@ export default class PathfindingVisualizer extends Component {
   }
 
   animateShortestPath(shortestPathNodes) {
+    if (shortestPathNodes.length === 0) {
+      this.updateMsg(MSG_NO_PATH)
+    }
+
     for (let i = 0; i < shortestPathNodes.length; i++) {
       const { col, row } = shortestPathNodes[i]
-      // shortestPathAnimationTimer =
       setTimeout(() => {
         this.makeOtherNodeRender(row, col)
       }, 50 * i)
     }
-    setShortestPathAnimationFalse()
   }
 
   makeOtherNodeRender(row, col) {
@@ -121,17 +131,18 @@ export default class PathfindingVisualizer extends Component {
 
   activeTutorial() {
     setVisibleTrue()
-    console.log('tutorial activated')
     this.tutorialRef.current.setState({ pageNo: 1 })
   }
 
   resetNodes() {
     const { nodes } = this.state
     initStoreNodes(nodes)
-    // clearTimeout(visitingAnimationTimer)
-    // clearTimeout(shortestPathAnimationStartTimer)
-    // clearTimeout(shortestPathAnimationTimer)
+    this.updateMsg()
     this.setState({})
+  }
+
+  updateMsg(msg = MSG_DEFAULT) {
+    this.msgRef.current.innerHTML = msg
   }
 
   render() {
@@ -143,7 +154,6 @@ export default class PathfindingVisualizer extends Component {
         <div className='navbar'>
           <div className='navbar-title'>Pathfinding Visualizer</div>
           <div className='navbar-algos'>
-            {' '}
             <button
               onClick={() => this.implementAlgorithm(ASTAR)}
               className='navbar-button button-algo'>
@@ -193,6 +203,10 @@ export default class PathfindingVisualizer extends Component {
         </Affix> */}
 
         <InfoBar />
+        <div className='message-bar' ref={this.msgRef}>
+          {MSG_DEFAULT}
+        </div>
+
         <Grid>
           {nodes.map((row) =>
             row.map((node) => {
@@ -234,7 +248,7 @@ const createNode = (row, col) => {
     row: row,
     previousNode: null,
     distance: Infinity,
-    distanceFromStart: Infinity, //for Astar
+    distanceFromStop: Infinity, //for A* search
     isWall: false,
     isStart: row === START_NODE_ROW && col === START_NODE_COL,
     isStop: row === STOP_NODE_ROW && col === STOP_NODE_COL,
@@ -249,6 +263,7 @@ const initStoreNodes = (nodes) => {
   resetPreviousNode()
   setStartNode(START_NODE_ROW, START_NODE_COL)
   setStopNode(STOP_NODE_ROW, STOP_NODE_COL)
+  
   const action = {
     type: INIT_NODES,
     value: nodes,
@@ -287,28 +302,6 @@ const setShortestPathAnimationTrue = () => {
 const actionMouseUp = () => {
   const action = {
     type: MOUSE_UP,
-  }
-  store.dispatch(action)
-}
-
-const setStartNode = (row, col) => {
-  const action = {
-    type: SET_START_NODE,
-    value: [row, col],
-  }
-  store.dispatch(action)
-}
-const setStopNode = (row, col) => {
-  const action = {
-    type: SET_STOP_NODE,
-    value: [row, col],
-  }
-  store.dispatch(action)
-}
-
-const resetPreviousNode = () => {
-  const action = {
-    type: RESET_PREVIOUS_NODE,
   }
   store.dispatch(action)
 }
