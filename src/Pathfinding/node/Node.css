@@ -72,18 +72,18 @@
     background-color: #000042bf;
   }
   50% {
-    background-color: #73acf7bf;
+    background-color: #2b84f8bf;
     opacity: 0.8;
   }
   75% {
     transform: scale(1.2);
-    background-color: #31d6ffbf;
+    background-color: #31fff5bf;
     opacity: 1;
   }
   100% {
     transform: scale(1);
     border: 1px solid white;
-    background-color: #4988fc;
+    background-color: #246ffa;
   }
 }
 
