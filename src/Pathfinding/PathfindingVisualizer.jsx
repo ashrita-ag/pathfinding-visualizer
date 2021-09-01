@@ -32,9 +32,6 @@ import { dijkstra } from '../Algorithms/dijkstra'
 import { astar } from '../Algorithms/astar'
 import { bestFirst } from '../Algorithms/bestfirst'
 import { bfs } from '../Algorithms/bfs'
-import Tutorial, { setVisibleFalse, setVisibleTrue } from './tutorial/Tutorial'
-import { Affix, Button, message, Tooltip } from 'antd'
-import { FileTextOutlined } from '@ant-design/icons'
 import './PathfindingVisualizer.css'
 
 export default class PathfindingVisualizer extends Component {
@@ -53,7 +50,6 @@ export default class PathfindingVisualizer extends Component {
       }
       this.nodeRefs.push(refRow)
     }
-    this.tutorialRef = createRef()
     this.msgRef = createRef()
   }
 
@@ -66,7 +62,6 @@ export default class PathfindingVisualizer extends Component {
   implementAlgorithm(algoName) {
     if (!store.getState().visitingAnimation) {
       setVistingAnimationTrue()
-
       if (algoName === DIJKSTRA) this.updateMsg(MSG_DIJKSTRA)
       else if (algoName === ASTAR) this.updateMsg(MSG_ASTAR)
       else if (algoName === BEST_FIRST) this.updateMsg(MSG_BEST_FIRST)
@@ -117,11 +112,18 @@ export default class PathfindingVisualizer extends Component {
       this.updateMsg(MSG_NO_PATH)
     }
 
-    for (let i = 0; i < shortestPathNodes.length; i++) {
-      const { col, row } = shortestPathNodes[i]
-      setTimeout(() => {
-        this.makeOtherNodeRender(row, col)
-      }, 50 * i)
+    for (let i = 0; i <= shortestPathNodes.length; i++) {
+      if (i === shortestPathNodes.length) {
+        setTimeout(() => {
+          setShortestPathAnimationFalse()
+          setVistingAnimationFalse()
+        }, 50 * i)
+      } else {
+        const { col, row } = shortestPathNodes[i]
+        setTimeout(() => {
+          this.makeOtherNodeRender(row, col)
+        }, 50 * i)
+      }
     }
   }
 
@@ -129,16 +131,16 @@ export default class PathfindingVisualizer extends Component {
     this.nodeRefs[row][col].current.setState({})
   }
 
-  activeTutorial() {
-    setVisibleTrue()
-    this.tutorialRef.current.setState({ pageNo: 1 })
-  }
-
   resetNodes() {
-    const { nodes } = this.state
-    initStoreNodes(nodes)
-    this.updateMsg()
-    this.setState({})
+    if (
+      !store.getState().visitingAnimation &&
+      !store.getState().shortestPathAnimation
+    ) {
+      const { nodes } = this.state
+      initStoreNodes(nodes)
+      this.updateMsg()
+      this.setState({})
+    }
   }
 
   updateMsg(msg = MSG_DEFAULT) {
@@ -149,8 +151,6 @@ export default class PathfindingVisualizer extends Component {
     const nodes = store.getState().nodes
     return (
       <>
-        {/* <Tutorial ref={this.tutorialRef}></Tutorial> */}
-
         <div className='navbar'>
           <div className='navbar-title'>Pathfinding Visualizer</div>
           <div className='navbar-algos'>
@@ -182,25 +182,6 @@ export default class PathfindingVisualizer extends Component {
             Reset Grid
           </button>
         </div>
-
-        {/* 
-        <Affix offsetTop={130} className='tutorial-affix'>
-          <Tooltip title='Tutorial' placement='right' mouseEnterDelay='0.1'>
-            <Button
-              type='default'
-              shape='round'
-              size='large'
-              className='tutorial-btn'
-              onClick={() => {
-                this.activeTutorial()
-              }}
-              >
-              <div className='tutorial-innerbtn'>
-                <FileTextOutlined className='tutorial-icon' />
-              </div>
-            </Button>
-          </Tooltip>
-        </Affix> */}
 
         <InfoBar />
         <div className='message-bar' ref={this.msgRef}>
@@ -263,7 +244,7 @@ const initStoreNodes = (nodes) => {
   resetPreviousNode()
   setStartNode(START_NODE_ROW, START_NODE_COL)
   setStopNode(STOP_NODE_ROW, STOP_NODE_COL)
-  
+
   const action = {
     type: INIT_NODES,
     value: nodes,
